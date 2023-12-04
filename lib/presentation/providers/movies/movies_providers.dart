@@ -12,7 +12,7 @@ final nowPlayingMoviesProvider =
 typedef MovieCallback = Future<List<Movie>> Function({int page});
 
 class MoviesNotifier extends StateNotifier<List<Movie>> {
-  int currentPage = 1;
+  int currentPage = 0;
   MovieCallback fetchMoreMovies;
 
   MoviesNotifier({

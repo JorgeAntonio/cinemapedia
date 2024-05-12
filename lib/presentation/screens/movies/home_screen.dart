@@ -41,17 +41,52 @@ class _HomeViewState extends ConsumerState<_HomeView> {
       );
     }
 
-    return Column(
-      children: [
-        const CustomAppBar(),
-        MoviesSlideshow(movies: slideShowMovies),
-        MovieHorizontalListview(
-          movie: nowPlayingMovies,
-          title: 'En cines',
-          subtitle: 'Estrenos de la semana',
-          loadNextPage: () {
-            ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
-          },
+    return CustomScrollView(
+      slivers: [
+        const SliverAppBar(
+          floating: true,
+          flexibleSpace: FlexibleSpaceBar(
+            title: CustomAppBar(),
+            centerTitle: false,
+            titlePadding: EdgeInsets.all(0.0),
+          ),
+        ),
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              return Column(
+                children: [
+                  MoviesSlideshow(movies: slideShowMovies),
+                  MovieHorizontalListview(
+                    movie: nowPlayingMovies,
+                    title: 'En cines',
+                    subtitle: 'Estrenos de la semana',
+                    loadNextPage: () => ref
+                        .read(nowPlayingMoviesProvider.notifier)
+                        .loadNextPage(),
+                  ),
+                  MovieHorizontalListview(
+                    movie: nowPlayingMovies,
+                    title: 'Populares',
+                    subtitle: 'Las más vistas de la semana',
+                    loadNextPage: () => ref
+                        .read(nowPlayingMoviesProvider.notifier)
+                        .loadNextPage(),
+                  ),
+                  MovieHorizontalListview(
+                    movie: nowPlayingMovies,
+                    title: 'Top Rated',
+                    subtitle: 'Las mejor valoradas de la semana',
+                    loadNextPage: () => ref
+                        .read(nowPlayingMoviesProvider.notifier)
+                        .loadNextPage(),
+                  ),
+                  const SizedBox(height: 10.0),
+                ],
+              );
+            },
+            childCount: 1,
+          ),
         ),
       ],
     );

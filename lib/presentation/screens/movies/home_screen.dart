@@ -29,19 +29,20 @@ class _HomeViewState extends ConsumerState<_HomeView> {
 
     ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
     ref.read(popularMoviesProvider.notifier).loadNextPage();
+    ref.read(topRatedMoviesProvider.notifier).loadNextPage();
+    ref.read(upcomingMoviesProvider.notifier).loadNextPage();
   }
 
   @override
   Widget build(BuildContext context) {
-    final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
-    final slideShowMovies = ref.watch(moviesSlideshowProvider);
-    final popularMovies = ref.watch(popularMoviesProvider);
+    final initialLoading = ref.watch(initialLoadingProvider);
+    if (initialLoading) return const FullScreenLoader();
 
-    if (slideShowMovies.isEmpty) {
-      return const Center(
-        child: CircularProgressIndicator(strokeWidth: 2.0),
-      );
-    }
+    final slideShowMovies = ref.watch(moviesSlideshowProvider);
+    final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
+    final popularMovies = ref.watch(popularMoviesProvider);
+    final topRatedMovies = ref.watch(topRatedMoviesProvider);
+    final upcomingMovies = ref.watch(upcomingMoviesProvider);
 
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
@@ -76,11 +77,19 @@ class _HomeViewState extends ConsumerState<_HomeView> {
                         ref.read(popularMoviesProvider.notifier).loadNextPage(),
                   ),
                   MovieHorizontalListview(
-                    movie: nowPlayingMovies,
+                    movie: topRatedMovies,
                     title: 'Top Rated',
                     subtitle: 'Desde siempre',
                     loadNextPage: () => ref
-                        .read(nowPlayingMoviesProvider.notifier)
+                        .read(topRatedMoviesProvider.notifier)
+                        .loadNextPage(),
+                  ),
+                  MovieHorizontalListview(
+                    movie: upcomingMovies,
+                    title: 'Proximos',
+                    subtitle: 'Estrenos del año',
+                    loadNextPage: () => ref
+                        .read(upcomingMoviesProvider.notifier)
                         .loadNextPage(),
                   ),
                   const SizedBox(height: 10.0),
